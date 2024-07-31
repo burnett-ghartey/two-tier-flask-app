@@ -3,31 +3,38 @@ services:
   mysql:
     container_name: mysql
     image: mysql:5.7
-    ports:
-      - "3306:3306"
     environment:
       MYSQL_DATABASE: devops
-      MYSQL_ROOT_PASSWORD: demo@123
+      MYSQL_ROOT_PASSWORD: test@123
+    ports:
+      - "3306:3306"
     volumes:
       - mysql-data:/var/lib/mysql
     healthcheck:
-      test: ["CMD", "mysqladmin", "ping", "-h", "localhost"]
+      test: ["CMD", "mysqladmin", "ping", "-h", "localhost", "-uroot", "-ptest@123"]
       interval: 10s
       timeout: 5s
       retries: 5
+    networks:
+      - app-network
 
-  flask-app:
-    image: vandanapandit/twotier:latest
-    ports:
-      - "5000:5000"
+  flaskapp:
+    image: vandanapandit/twotierapp:latest
     environment:
       MYSQL_HOST: mysql
       MYSQL_USER: root
-      MYSQL_PASSWORD: demo@123
+      MYSQL_PASSWORD: test@123
       MYSQL_DB: devops
+    ports:
+      - "5000:5000"
     depends_on:
-      mysql: 
+      mysql:
         condition: service_healthy
+    networks:
+      - app-network
 
 volumes:
   mysql-data:
+
+networks:
+  app-network:
