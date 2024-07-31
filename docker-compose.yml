@@ -8,7 +8,6 @@ services:
     environment:
       MYSQL_DATABASE: devops
       MYSQL_ROOT_PASSWORD: demo@123
-    
     volumes:
       - mysql-data:/var/lib/mysql
     healthcheck:
@@ -17,19 +16,17 @@ services:
       timeout: 5s
       retries: 5
 
-  
-  flaskapp:
-    image: vandanapandit/twotierapp:latest
+  flask-app:
+    image: vandanapandit/twotier:latest
     ports:
-      - "5000:5000" 
+      - "5000:5000"
     environment:
       MYSQL_HOST: mysql
       MYSQL_USER: root
       MYSQL_PASSWORD: demo@123
       MYSQL_DB: devops
-      
     depends_on:
-      mysql:
+      mysql: 
         condition: service_healthy
 
 volumes:
