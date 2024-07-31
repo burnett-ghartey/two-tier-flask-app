@@ -3,15 +3,15 @@ services:
   mysql:
     container_name: mysql
     image: mysql:5.7
-    environment:
-      MYSQL_DATABASE: devops
-      MYSQL_ROOT_PASSWORD: test@123
     ports:
       - "3306:3306"
+    environment:
+      MYSQL_DATABASE: "devops"
+      MYSQL_ROOT_PASSWORD: "demo@123"
     volumes:
       - mysql-data:/var/lib/mysql
     healthcheck:
-      test: ["CMD", "mysqladmin", "ping", "-h", "localhost", "-uroot", "-ptest@123"]
+      test: ["CMD", "mysqladmin", "ping", "-h", "localhost", "-uroot", "-pdemo@123"]
       interval: 10s
       timeout: 5s
       retries: 5
@@ -20,13 +20,13 @@ services:
 
   flaskapp:
     image: vandanapandit/twotierapp:latest
-    environment:
-      MYSQL_HOST: mysql
-      MYSQL_USER: root
-      MYSQL_PASSWORD: test@123
-      MYSQL_DB: devops
     ports:
       - "5000:5000"
+    environment:
+      MYSQL_HOST: "mysql"
+      MYSQL_USER: "root"
+      MYSQL_PASSWORD: "demo@123"
+      MYSQL_DB: "devops"
     depends_on:
       mysql:
         condition: service_healthy
