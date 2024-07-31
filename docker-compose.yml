@@ -26,9 +26,9 @@ services:
       MYSQL_DB: devops
     ports:
       - "5000:5000"   
-    depends_on: 
-      - mysql
-          condition: service_healthy
+    depends_on:
+      mysql:
+        condition: service_healthy
 
 volumes:
   mysql-data:
