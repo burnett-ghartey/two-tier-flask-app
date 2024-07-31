@@ -3,11 +3,12 @@ services:
   mysql:
     container_name: mysql
     image: mysql:5.7
+    ports:
+      - "3306:3306"
     environment:
       MYSQL_DATABASE: devops
       MYSQL_ROOT_PASSWORD: test@123
-    ports:
-      - "3306:3306"
+    
     volumes:
       - mysql-data:/var/lib/mysql
     healthcheck:
@@ -19,13 +20,14 @@ services:
   
   flaskapp:
     image: vandanapandit/twotierapp:latest
+    ports:
+      - "5000:5000" 
     environment:
       MYSQL_HOST: mysql
       MYSQL_USER: root
       MYSQL_PASSWORD: test@123
       MYSQL_DB: devops
-    ports:
-      - "5000:5000"   
+      
     depends_on:
       mysql:
         condition: service_healthy
