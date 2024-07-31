@@ -1,31 +1,34 @@
 version: '3'
 services:
-  
-  backend:
-    build:
-      context: .
-    ports:
-      - "5000:5000"
-    environment:
-      MYSQL_HOST: mysql
-      MYSQL_USER: admin
-      MYSQL_PASSWORD: admin
-      MYSQL_DB: myDb
-    depends_on:
-      - mysql
-
   mysql:
+    container_name: mysql
     image: mysql:5.7
+    environment:
+      MYSQL_DATABASE: devops
+      MYSQL_ROOT_PASSWORD: test@123
     ports:
       - "3306:3306"
-    environment:
-      MYSQL_ROOT_PASSWORD: root
-      MYSQL_DATABASE: myDb
-      MYSQL_USER: admin
-      MYSQL_PASSWORD: admin
     volumes:
-      - ./message.sql:/docker-entrypoint-initdb.d/message.sql   # Mount sql script into container's /docker-entrypoint-initdb.d directory to get table automatically created
-      - mysql-data:/var/lib/mysql  # Mount the volume for MySQL data storage
+      - mysql-data:/var/lib/mysql
+    health_check:
+      test: ["CMD", "mysqladmin", "ping", "-h", "localhost"]
+      interval: 10s
+      timeout: 5s
+      retries: 5
+
+  
+  flaskapp:
+    image: vandanapandit/twotierapp:latest
+    environment:
+      MYSQL_HOST: mysql
+      MYSQL_USER: root
+      MYSQL_PASSWORD: test@123
+      MYSQL_DB: devops
+    ports:
+      - "5000:5000"   
+    depends_on: 
+      - mysql
+        condition: service_healthy
 
 volumes:
   mysql-data:
