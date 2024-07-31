@@ -9,14 +9,14 @@ services:
       MYSQL_DATABASE: "devops"
       MYSQL_ROOT_PASSWORD: "demo@123"
     volumes:
-      - mysql-data:/var/lib/mysql
+      - vol_latest:/var/lib/mysql
     healthcheck:
-      test: ["CMD", "mysqladmin", "ping", "-h", "localhost", "-uroot", "-pdemo@123"]
+      test: ["CMD", "mysqladmin", "ping", "-h", "localhost"]
       interval: 10s
       timeout: 5s
       retries: 5
     networks:
-      - app-network
+      - netlatest
 
   flaskapp:
     image: vandanapandit/twotierapp:latest
@@ -31,10 +31,10 @@ services:
       mysql:
         condition: service_healthy
     networks:
-      - app-network
+      - netlatest
 
 volumes:
-  mysql-data:
+  vol_latest:
 
 networks:
-  app-network:
+  netlatest:
