@@ -9,6 +9,7 @@ pipeline{
         stage("Code"){
             steps{
                 git url: "https://github.com/VandanaPandit/two-tier-flask-app.git" ,branch: "master" 
+                echo "hello"
             }
         }
         stage("Build"){
