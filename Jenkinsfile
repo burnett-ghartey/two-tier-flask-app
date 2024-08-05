@@ -1,41 +1,37 @@
 pipeline{
     agent{
-        node{
-            label "dev"
-            }
+        node {
+        label 'dev'
+        }
     }
+    
     stages{
         stage("Code"){
             steps{
-                git url: "https://github.com/VandanaPandit/two-tier-flask-app.git", branch: "master"
+                git url: "https://github.com/VandanaPandit/two-tier-flask-app.git" ,branch: "master" 
             }
         }
         stage("Build"){
             steps{
-                sh "docker build -t twotierapp:latest ."
+                sh "docker build -t twotierfapp:latest ."
             }
         }
-        stage("Docker Push")
+        stage("Docker push")
         {
             steps{
-                withCredentials([usernamePassword(credentialsId: 'dockerCreds', 
-                                             usernameVariable: 'DockerUser',
-                                             passwordVariable: 'Dockerpass',
-                                             )]) 
-                                             {
-                                                 sh "docker image tag twotierapp:latest ${env.DockerUser}/twotierapp:latest"
-                                                 sh "docker login -u ${env.DockerUser} -p ${env.Dockerpass}" 
-                                                
-                                             
-                                                 sh "docker push ${env.DockerUser}/twotierapp:latest" 
-                                             }
+            withCredentials([usernamePassword(credentialsId: 'DockerCreds', usernameVariable: 'DockerUsername', passwordVariable: 'DockerPassword')]) 
+            {
+            sh "docker image tag twotierfapp:latest $DockerUsername/twotierfapp:latest"
+            sh "docker login -u $DockerUsername -p $DockerPassword"
+            sh "docker push $DockerUsername/twotierfapp:latest"
+            }
             }
         }
-        stage("docker compose"){
+        stage("Docker Compose"){
             steps{
-                sh "docker compose down && docker compose up -d"
+            sh "docker compose down && docker compose up -d"
             }
         }
         
-        }
     }
+}
