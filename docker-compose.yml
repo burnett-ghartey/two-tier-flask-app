@@ -19,7 +19,7 @@ services:
       - netlatest
 
   flaskapp:
-    image: vandanapandit/twotierapp:latest
+    image: oneghartey/twotierfapp:latest
     ports:
       - "5000:5000"
     environment:
