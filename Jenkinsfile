@@ -7,7 +7,7 @@ pipeline {
         stage('code') {
             steps {
                 git branch: 'master', url: 'https://github.com/burnett-ghartey/two-tier-flask-app.git'
-                echo 'hello world'
+                echo 'hello world friends'
             }
         }
         stage('build') {
