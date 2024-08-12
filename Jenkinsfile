@@ -1,38 +1,32 @@
-pipeline{
-    agent{
-        node {
-        label 'dev'
-        }
+pipeline {
+    agent {
+        node { label 'dev' }
     }
     
-    stages{
-        stage("Code"){
-            steps{
-                git url: "https://github.com/VandanaPandit/two-tier-flask-app.git" ,branch: "master" 
-                echo "hello"
+    stages {
+        stage('code') {
+            steps {
+                git branch: 'master', url: 'https://github.com/burnett-ghartey/two-tier-flask-app.git'
             }
         }
-        stage("Build"){
-            steps{
+        stage('build') {
+            steps {
                 sh "docker build -t twotierfapp:latest ."
             }
         }
-        stage("Docker push")
-        {
-            steps{
-            withCredentials([usernamePassword(credentialsId: 'DockerCreds', usernameVariable: 'DockerUsername', passwordVariable: 'DockerPassword')]) 
-            {
-            sh "docker image tag twotierfapp:latest $DockerUsername/twotierfapp:latest"
-            sh "docker login -u $DockerUsername -p $DockerPassword"
-            sh "docker push $DockerUsername/twotierfapp:latest"
-            }
+        stage('docker push') {
+            steps {
+                withCredentials([usernamePassword(credentialsId: 'DockerCreds', usernameVariable: 'DockerUsername', passwordVariable: 'DockerPassword')]) {
+                    sh "docker image tag twotierfapp:latest $DockerUsername/twotierfapp:latest"
+                    sh "docker login -u $DockerUsername -p $DockerPassword"
+                    sh "docker push $DockerUsername/twotierfapp:latest"
+                }
             }
         }
-        stage("Docker Compose"){
-            steps{
-            sh "docker compose down && docker compose up -d"
+        stage('Docker compose') {
+            steps {
+                sh "docker-compose up -d"
             }
         }
-        
     }
 }
